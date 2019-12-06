@@ -2,9 +2,9 @@
 
 Param(
     [Parameter(Mandatory)]
-    [string]$Value,
     [string]$DesKey,
     [string]$DesIv,
+    [string]$Value,
     [switch]$Decrypt
 )
 
