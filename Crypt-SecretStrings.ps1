@@ -2,8 +2,6 @@
 
 Param(
     [Parameter(Mandatory)]
-    [string]$DesKey,
-    [string]$DesIv,
     [string]$Value,
     [switch]$Decrypt
 )
@@ -23,6 +21,8 @@ function Use-Disposable {
     }
 }
 
+$Secret = Get-Content -Path Crypt-SecretStrings.secret | ConvertFrom-Json
+
 function Get-EncriptString {
     Param(
         [string]$Value
@@ -35,8 +35,8 @@ function Get-EncriptString {
 
         $TripleDESCryptoServiceProvider = New-Object System.Security.Cryptography.TripleDESCryptoServiceProvider
         $Encryptor = $TripleDESCryptoServiceProvider.CreateEncryptor(
-            [Convert]::FromBase64String($DesKey),
-            [Convert]::FromBase64String($DesIv)
+            [Convert]::FromBase64String($Secret.DesKey),
+            [Convert]::FromBase64String($Secret.DesIv)
         )
 
         Use-Disposable (New-Object System.Security.Cryptography.CryptoStream(
@@ -68,8 +68,8 @@ function Get-DecriptString {
 
         $TripleDESCryptoServiceProvider = New-Object System.Security.Cryptography.TripleDESCryptoServiceProvider
         $Encryptor = $TripleDESCryptoServiceProvider.CreateDecryptor(
-            [Convert]::FromBase64String($DesKey),
-            [Convert]::FromBase64String($DesIv)
+            [Convert]::FromBase64String($Secret.DesKey),
+            [Convert]::FromBase64String($Secret.DesIv)
         )
 
         Use-Disposable (New-Object System.Security.Cryptography.CryptoStream(
