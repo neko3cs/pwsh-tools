@@ -6,6 +6,8 @@ Param(
     [switch]$Decrypt
 )
 
+# TODO: usage書く
+
 function Use-Disposable {
     param (
         [System.IDisposable]$disposable,
@@ -21,6 +23,10 @@ function Use-Disposable {
     }
 }
 
+# TODO: 自動生成するオプションを作る
+# 以下内容のCrypt-SecretStrings.secretファイルが必要
+#   { DesKey: "{TripleDES共有キー}", DesIv: "{TripleDES初期化ベクター}" }
+# 参照：https://docs.microsoft.com/ja-jp/dotnet/standard/security/generating-keys-for-encryption-and-decryption
 $Secret = Get-Content -Path Crypt-SecretStrings.secret | ConvertFrom-Json
 
 function Get-EncriptString {
