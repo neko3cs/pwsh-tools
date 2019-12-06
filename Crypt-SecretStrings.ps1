@@ -1,4 +1,4 @@
-# Windows PowerShell
+# PowerShell Core
 
 Param(
     [Parameter(Mandatory)]
