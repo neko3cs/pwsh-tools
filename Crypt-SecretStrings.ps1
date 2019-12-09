@@ -1,26 +1,26 @@
 # PowerShell Core
 
 Param(
-    [Parameter(Mandatory)]
     [string]$Value,
-    [switch]$Decrypt
+    [switch]$Decrypt,
+    [switch]$Help
 )
 
-# TODO: usage書く
+# using common script
+. ./Use-Disposable.ps1
 
-function Use-Disposable {
-    param (
-        [System.IDisposable]$disposable,
-        [scriptblock]$block
-    )
-    try {
-        &$block($disposable)
-    }
-    finally {
-        if ($disposable) { 
-            $disposable.Dispose() 
-        }
-    }
+function Write-Usage {
+    Write-Output "usage: "
+    Write-Output "      1. .\Crypt-SecretStrings.ps1 -Value <Dcrypted String>"
+    Write-Output "      2. .\Crypt-SecretStrings.ps1 -Decrypt -Value <Encrypted String>"
+    Write-Output ""
+    Write-Output "  -Decrypt: Decrypt '-Value' option string."
+    Write-Output "  -Value  : The string you want to crypt."
+}
+
+if ($Help -or [string]::IsNullOrEmpty($Value)) {
+    Write-Usage
+    exit
 }
 
 # TODO: 自動生成するオプションを作る

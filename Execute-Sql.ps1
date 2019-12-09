@@ -7,20 +7,8 @@ Param (
     [string]$Sql
 )
 
-function Use-Disposable {
-    param (
-        [System.IDisposable]$disposable,
-        [scriptblock]$block
-    )
-    try {
-        &$block($disposable)
-    }
-    finally {
-        if ($disposable) { 
-            $disposable.Dispose() 
-        }
-    }
-}
+# using common script
+. ./Use-Disposable.ps1
 
 [object]$ConnectionString = New-Object System.Data.SqlClient.SqlConnectionStringBuilder
 $ConnectionString["Data Source"] = $Server
