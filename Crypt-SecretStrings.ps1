@@ -23,11 +23,18 @@ if ($Help -or [string]::IsNullOrEmpty($Value)) {
     exit
 }
 
-# TODO: 自動生成するオプションを作る
-# 以下内容のCrypt-SecretStrings.secretファイルが必要
-#   { DesKey: "{TripleDES共有キー}", DesIv: "{TripleDES初期化ベクター}" }
-# 参照：https://docs.microsoft.com/ja-jp/dotnet/standard/security/generating-keys-for-encryption-and-decryption
-$Secret = Get-Content -Path Crypt-SecretStrings.secret | ConvertFrom-Json
+# TODO: 自動生成するオプション -> 動作確認する
+$SecretFileName = "Crypt-SecretStrings.secret"
+if (-not [System.IO.File]::Exists($SecretFileName)) {
+    $TripleDESCryptoServiceProvider = New-Object System.Security.Cryptography.TripleDESCryptoServiceProvider
+    $TripleDESCryptoServiceProvider.GenerateKey();
+    $TripleDESCryptoServiceProvider.GenerateIV();
+    @{
+        DesKey = $TripleDESCryptoServiceProvider.Key
+        DesIv  = $TripleDESCryptoServiceProvider.IV
+    } | ConvertTo-Json | Out-File -FilePath $SecretFileName
+}
+$Secret = Get-Content -Path $SecretFileName | ConvertFrom-Json
 
 function Get-EncriptString {
     Param(
