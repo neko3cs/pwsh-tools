@@ -8,7 +8,7 @@ Param (
 )
 
 # using common script
-. ./Use-Disposable.ps1
+. ./Common/Use-Disposable.ps1
 
 [object]$ConnectionString = New-Object System.Data.SqlClient.SqlConnectionStringBuilder
 $ConnectionString["Data Source"] = $Server

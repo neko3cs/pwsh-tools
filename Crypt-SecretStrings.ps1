@@ -7,7 +7,7 @@ Param(
 )
 
 # using common script
-. ./Use-Disposable.ps1
+. ./Common/Use-Disposable.ps1
 
 function Write-Usage {
     Write-Output "usage: "
