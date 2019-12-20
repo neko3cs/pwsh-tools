@@ -15,6 +15,11 @@ function Write-Usage {
     echo "  -Help: Write this usage."
 }
 
+if ($Help) {
+    Write-Usage
+    exit;
+}
+
 $OutFileName = (Join-Path $PSScriptRoot "out.sql")
 if (Test-Path($OutFileName)) {
     Remove-Item $OutFileName -Force
