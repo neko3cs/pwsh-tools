@@ -6,9 +6,6 @@ Param(
     [switch]$Help
 )
 
-# using section.
-. ./Common/Use-Disposable.ps1
-
 function Write-Usage {
     Write-Output "usage: "
     Write-Output "      1. .\Crypt-SecretStrings.ps1 -Value <Dcrypted String>"
@@ -23,6 +20,7 @@ if ($Help -or [string]::IsNullOrEmpty($Value)) {
     exit
 }
 
+# HACK: キーを環境変数に持ってモジュール化するか検討
 $SecretFileName = "Crypt-SecretStrings.secret"
 if (-not [System.IO.File]::Exists($SecretFileName)) {
     $TripleDESCryptoServiceProvider = New-Object System.Security.Cryptography.TripleDESCryptoServiceProvider

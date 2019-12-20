@@ -7,9 +7,6 @@ Param (
     [string]$Sql
 )
 
-# using section
-. ./Common/Use-Disposable.ps1
-
 [object]$ConnectionString = New-Object System.Data.SqlClient.SqlConnectionStringBuilder
 $ConnectionString["Data Source"] = $Server
 $ConnectionString["User Id"] = $User
