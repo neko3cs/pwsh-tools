@@ -30,8 +30,8 @@ if (-not [System.IO.File]::Exists($SecretFileName)) {
     $TripleDESCryptoServiceProvider.GenerateKey();
     $TripleDESCryptoServiceProvider.GenerateIV();
     @{
-        DesKey = $TripleDESCryptoServiceProvider.Key
-        DesIv  = $TripleDESCryptoServiceProvider.IV
+        DesKey = [Convert]::ToBase64String($TripleDESCryptoServiceProvider.Key)
+        DesIv  = [Convert]::ToBase64String($TripleDESCryptoServiceProvider.IV)
     } | ConvertTo-Json | Out-File -FilePath $SecretFileName
 }
 $Secret = Get-Content -Path $SecretFileName | ConvertFrom-Json
