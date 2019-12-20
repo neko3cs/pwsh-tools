@@ -1,11 +1,13 @@
 # PowerShell Core
 
+# 
 # using dispose like C#
+# 
 
 function Use-Disposable {
     param (
         [System.IDisposable]$disposable,
-        [scriptblock]$block
+        [ScriptBlock]$block
     )
     try {
         &$block($disposable)

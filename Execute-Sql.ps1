@@ -7,7 +7,7 @@ Param (
     [string]$Sql
 )
 
-# using common script
+# using section
 . ./Common/Use-Disposable.ps1
 
 [object]$ConnectionString = New-Object System.Data.SqlClient.SqlConnectionStringBuilder

@@ -6,7 +6,7 @@ Param(
     [switch]$Help
 )
 
-# using common script
+# using section.
 . ./Common/Use-Disposable.ps1
 
 function Write-Usage {
@@ -23,7 +23,6 @@ if ($Help -or [string]::IsNullOrEmpty($Value)) {
     exit
 }
 
-# TODO: 自動生成するオプション -> 動作確認する
 $SecretFileName = "Crypt-SecretStrings.secret"
 if (-not [System.IO.File]::Exists($SecretFileName)) {
     $TripleDESCryptoServiceProvider = New-Object System.Security.Cryptography.TripleDESCryptoServiceProvider
