@@ -5,8 +5,11 @@
     Encrypt or Decrypt with Triple DES.
     Default is Encryption.
 .DESCRIPTION
-    1. .\Crypt-SecretStrings.ps1 -Value <Dcrypted String>
-    2. .\Crypt-SecretStrings.ps1 -Decrypt -Value <Encrypted String>
+    1. Encryption
+        Encryption plane string with Triple DES Algorithm.
+        Default is encryption.
+    2. Decryption
+        Decryption encrypted string by Triple DES Algorithm with "-Decrypt" parameter.
 .PARAMETER Decrypt
     Decrypt '-Value' option string.
 .PARAMETER Value
