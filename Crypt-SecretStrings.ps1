@@ -6,6 +6,8 @@ Param(
     [switch]$Help
 )
 
+Import-Module ./Modules/Use-Disposable.psm1
+
 function Write-Usage {
     Write-Output "usage: "
     Write-Output "      1. .\Crypt-SecretStrings.ps1 -Value <Dcrypted String>"

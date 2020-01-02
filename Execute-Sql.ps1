@@ -7,6 +7,8 @@ Param (
     [string]$Sql
 )
 
+Import-Module ./Modules/Use-Disposable.psm1
+
 [object]$ConnectionString = New-Object System.Data.SqlClient.SqlConnectionStringBuilder
 $ConnectionString["Data Source"] = $Server
 $ConnectionString["User Id"] = $User
