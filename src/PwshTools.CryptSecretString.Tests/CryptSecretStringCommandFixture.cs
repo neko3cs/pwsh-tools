@@ -10,7 +10,7 @@ namespace PwshTools.CryptSecretString.Tests
         private static readonly string UnitTestSecretIV = "c6HTL7oxzFI=";
 
         [Fact]
-        public void Invoke_Key‚ÆIV‚ğˆø”‚É“n‚µ‚Äó‘Ô‚Å³í‚ÉˆÃ†‰»‚³‚ê‚é‚±‚Æ()
+        public void Invoke_Keyã¨IVã‚’å¼•æ•°ã«æ¸¡ã—ã¦çŠ¶æ…‹ã§æ­£å¸¸ã«æš—å·åŒ–ã•ã‚Œã‚‹ã“ã¨()
         {
             var cmdlet = new CryptSecretStringCommand();
             cmdlet.Value = "jTQKimAzZ2mdLgKmlA0PHg==";
@@ -26,7 +26,7 @@ namespace PwshTools.CryptSecretString.Tests
         }
 
         [Fact]
-        public void Invoke_Key‚ÆIV‚ğˆø”‚É“n‚µ‚Äó‘Ô‚Å³í‚É•œ†‰»‚³‚ê‚é‚±‚Æ()
+        public void Invoke_Keyã¨IVã‚’å¼•æ•°ã«æ¸¡ã—ã¦çŠ¶æ…‹ã§æ­£å¸¸ã«å¾©å·åŒ–ã•ã‚Œã‚‹ã“ã¨()
         {
             var cmdlet = new CryptSecretStringCommand();
             cmdlet.Value = "hogehoge";
