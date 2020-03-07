@@ -22,7 +22,7 @@ Param(
 )
 
 begin {
-    Import-Module ./Modules/Use-Disposable.psm1
+    Import-Module ./Use-Disposable.psm1
 
     function New-SecretKeyAndIV {
         $TripleDESCryptoServiceProvider = New-Object System.Security.Cryptography.TripleDESCryptoServiceProvider
