@@ -22,8 +22,21 @@ Param(
 )
 
 begin {
-    Import-Module ./Use-Disposable.psm1
-
+    function Use-Disposable {
+        param (
+            [System.IDisposable]$disposable,
+            [ScriptBlock]$block
+        )
+        try {
+            &$block($disposable)
+        }
+        finally {
+            if ($disposable) { 
+                $disposable.Dispose() 
+            }
+        }
+    }
+    
     function New-SecretKeyAndIV {
         $TripleDESCryptoServiceProvider = New-Object System.Security.Cryptography.TripleDESCryptoServiceProvider
         $TripleDESCryptoServiceProvider.GenerateKey();
@@ -111,7 +124,7 @@ process {
     }
 
     $Secret = $null
-    $SecretFileName = "Crypt-SecretStrings.secret"
+    $SecretFileName = ".\Crypt-SecretStrings.secret"
     if ([System.IO.File]::Exists($SecretFileName)) {
         $Secret = Get-Content -Path $SecretFileName | ConvertFrom-Json
     }
