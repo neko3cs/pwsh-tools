@@ -5,8 +5,12 @@ namespace PwshTools.CryptSecretString
 {
     public class TripleDESCryptoSecretInfoRepository
     {
-        private static readonly string TripleDESCryptoKeyEnviromentVariableName = "PwshTools.CryptSecretString.Key";
-        private static readonly string TripleDESCryptoIVEnviromentVariableName = "PwshTools.CryptSecretString.IV";
+        private TripleDESCryptoSecretInfoRepositoryConfig _config;
+
+        public TripleDESCryptoSecretInfoRepository(TripleDESCryptoSecretInfoRepositoryConfig config)
+        {
+            _config = config;
+        }
 
         public TripleDESCryptoSecretInfo CreateInfo()
         {
@@ -19,17 +23,17 @@ namespace PwshTools.CryptSecretString
                 IV = Convert.ToBase64String(provider.IV)
             };
 
-            Environment.SetEnvironmentVariable(TripleDESCryptoKeyEnviromentVariableName, info.Key, EnvironmentVariableTarget.User);
-            Environment.SetEnvironmentVariable(TripleDESCryptoIVEnviromentVariableName, info.IV, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(_config.TripleDESCryptoKeyEnviromentVariableName, info.Key, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(_config.TripleDESCryptoIVEnviromentVariableName, info.IV, EnvironmentVariableTarget.User);
 
             return info;
         }
 
         public TripleDESCryptoSecretInfo GetInfo()
         {
-            var key = Environment.GetEnvironmentVariable(TripleDESCryptoKeyEnviromentVariableName, EnvironmentVariableTarget.User);
+            var key = Environment.GetEnvironmentVariable(_config.TripleDESCryptoKeyEnviromentVariableName, EnvironmentVariableTarget.User);
             if (key is null) return null;
-            var iv = Environment.GetEnvironmentVariable(TripleDESCryptoIVEnviromentVariableName, EnvironmentVariableTarget.User);
+            var iv = Environment.GetEnvironmentVariable(_config.TripleDESCryptoIVEnviromentVariableName, EnvironmentVariableTarget.User);
             if (iv is null) return null;
 
             return new TripleDESCryptoSecretInfo

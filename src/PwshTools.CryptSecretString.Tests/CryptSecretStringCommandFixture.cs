@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Management.Automation;
 using Xunit;
@@ -10,10 +11,26 @@ namespace PwshTools.CryptSecretString.Tests
         private static readonly string UnitTestSecretIV = "c6HTL7oxzFI=";
 
         [Fact]
-        public void Invoke_KeyとIVを引数に渡して状態で正常に暗号化されること()
+        public void Invoke_KeyとIVを引数に渡して正常に暗号化されること()
         {
             var cmdlet = new CryptSecretStringCommand();
-            cmdlet.Value = "jTQKimAzZ2mdLgKmlA0PHg==";
+            cmdlet.Value = "hogehoge";
+            cmdlet.Decrypt = new SwitchParameter(isPresent: false);
+            cmdlet.Key = UnitTestSecretKey;
+            cmdlet.IV = UnitTestSecretIV;
+
+            var result = cmdlet
+                .Invoke<string>()
+                .Single();
+
+            Assert.Equal("6GQG8+pOFu7Fz1Qn0LPphw==", result);
+        }
+
+        [Fact]
+        public void Invoke_KeyとIVを引数に渡して正常に復号化されること()
+        {
+            var cmdlet = new CryptSecretStringCommand();
+            cmdlet.Value = "6GQG8+pOFu7Fz1Qn0LPphw==";
             cmdlet.Decrypt = new SwitchParameter(isPresent: true);
             cmdlet.Key = UnitTestSecretKey;
             cmdlet.IV = UnitTestSecretIV;
@@ -26,19 +43,83 @@ namespace PwshTools.CryptSecretString.Tests
         }
 
         [Fact]
-        public void Invoke_KeyとIVを引数に渡して状態で正常に復号化されること()
+        public void Invoke_KeyとIVを環境変数から取得して正常に暗号化されること()
         {
-            var cmdlet = new CryptSecretStringCommand();
+            var config = new TripleDESCryptoSecretInfoRepositoryConfig(
+                key: "PwshTools.CryptSecretString.Key.Tests.Cmdlet.1",
+                iv: "PwshTools.CryptSecretString.IV.Repos.Cmdlet.1"
+            );
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, UnitTestSecretKey, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, UnitTestSecretIV, EnvironmentVariableTarget.User);
+
+            var cmdlet = new CryptSecretStringCommand(
+                new TripleDESCryptoSecretInfoRepository(config)
+            );
             cmdlet.Value = "hogehoge";
             cmdlet.Decrypt = new SwitchParameter(isPresent: false);
-            cmdlet.Key = UnitTestSecretKey;
-            cmdlet.IV = UnitTestSecretIV;
 
             var result = cmdlet
                 .Invoke<string>()
                 .Single();
 
-            Assert.Equal("jTQKimAzZ2mdLgKmlA0PHg==", result);
+            Assert.Equal("6GQG8+pOFu7Fz1Qn0LPphw==", result);
+
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
+        }
+
+        [Fact]
+        public void Invoke_KeyとIVを環境変数から取得して正常に復号化されること()
+        {
+            var config = new TripleDESCryptoSecretInfoRepositoryConfig(
+                key: "PwshTools.CryptSecretString.Key.Tests.Cmdlet.2",
+                iv: "PwshTools.CryptSecretString.IV.Repos.Cmdlet.2"
+            );
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, UnitTestSecretKey, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, UnitTestSecretIV, EnvironmentVariableTarget.User);
+
+            var cmdlet = new CryptSecretStringCommand(
+                new TripleDESCryptoSecretInfoRepository(config)
+            );
+            cmdlet.Value = "6GQG8+pOFu7Fz1Qn0LPphw==";
+            cmdlet.Decrypt = new SwitchParameter(isPresent: true);
+
+            var result = cmdlet
+                .Invoke<string>()
+                .Single();
+
+            Assert.Equal("hogehoge", result);
+
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
+        }
+
+        [Fact]
+        public void Invoke_KeyとIVが引数と環境変数にない場合環境変数にKeyとIVが登録されていること()
+        {
+            var config = new TripleDESCryptoSecretInfoRepositoryConfig(
+                key: "PwshTools.CryptSecretString.Key.Tests.Cmdlet.3",
+                iv: "PwshTools.CryptSecretString.IV.Repos.Cmdlet.3"
+            );
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
+            Assert.Null(Environment.GetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, EnvironmentVariableTarget.User));
+            Assert.Null(Environment.GetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, EnvironmentVariableTarget.User));
+
+            var cmdlet = new CryptSecretStringCommand(
+                new TripleDESCryptoSecretInfoRepository(config)
+            );
+            cmdlet.Value = "hogehoge";
+            cmdlet.Decrypt = new SwitchParameter(isPresent: false);
+
+            var result = cmdlet
+                .Invoke<string>()
+                .Single();
+
+            Assert.NotNull(Environment.GetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, EnvironmentVariableTarget.User));
+            Assert.NotNull(Environment.GetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, EnvironmentVariableTarget.User));
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
         }
     }
 }

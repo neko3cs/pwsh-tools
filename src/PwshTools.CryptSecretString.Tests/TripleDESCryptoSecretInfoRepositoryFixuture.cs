@@ -5,49 +5,63 @@ namespace PwshTools.CryptSecretString.Tests
 {
     public class TripleDESCryptoSecretInfoRepositoryFixuture
     {
-        private static readonly string TripleDESCryptoKeyEnviromentVariableName = "PwshTools.CryptSecretString.Key.Tests";
-        private static readonly string TripleDESCryptoIVEnviromentVariableName = "PwshTools.CryptSecretString.IV.Tests";
-
-        // FIXME: テスト通しが影響しあってるのでシーケンシャルにする（環境変数にトランザクションは張れないので）
-
         [Fact]
         public void CreateInfo_正常に生成出来ること()
         {
-            Environment.SetEnvironmentVariable(TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
-            Environment.SetEnvironmentVariable(TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
-            Assert.Null(Environment.GetEnvironmentVariable(TripleDESCryptoKeyEnviromentVariableName, EnvironmentVariableTarget.User));
-            Assert.Null(Environment.GetEnvironmentVariable(TripleDESCryptoIVEnviromentVariableName, EnvironmentVariableTarget.User));
+            var config = new TripleDESCryptoSecretInfoRepositoryConfig(
+                key: "PwshTools.CryptSecretString.Key.Tests.Repos.1",
+                iv: "PwshTools.CryptSecretString.IV.Repos.Tests.1"
+            );
 
-            var info = new TripleDESCryptoSecretInfoRepository().CreateInfo();
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
+
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
+            Assert.Null(Environment.GetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, EnvironmentVariableTarget.User));
+            Assert.Null(Environment.GetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, EnvironmentVariableTarget.User));
+
+            var info = new TripleDESCryptoSecretInfoRepository(config).CreateInfo();
 
             Assert.Equal(
-                Environment.GetEnvironmentVariable(TripleDESCryptoKeyEnviromentVariableName, EnvironmentVariableTarget.User),
+                Environment.GetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, EnvironmentVariableTarget.User),
                 info.Key
             );
             Assert.Equal(
-                Environment.GetEnvironmentVariable(TripleDESCryptoIVEnviromentVariableName, EnvironmentVariableTarget.User),
+                Environment.GetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, EnvironmentVariableTarget.User),
                 info.IV
             );
+
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
         }
 
         [Fact]
         public void GetInfo_正常に取得できること()
         {
-            Environment.SetEnvironmentVariable(TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
-            Environment.SetEnvironmentVariable(TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
-            Environment.SetEnvironmentVariable(TripleDESCryptoKeyEnviromentVariableName, "TestKey", EnvironmentVariableTarget.User);
-            Environment.SetEnvironmentVariable(TripleDESCryptoIVEnviromentVariableName, "TestIV", EnvironmentVariableTarget.User);
+            var config = new TripleDESCryptoSecretInfoRepositoryConfig(
+                key: "PwshTools.CryptSecretString.Key.Tests.Repos.2",
+                iv: "PwshTools.CryptSecretString.IV.Tests.Repos.2"
+            );
 
-            var info = new TripleDESCryptoSecretInfoRepository().GetInfo();
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, "TestKey", EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, "TestIV", EnvironmentVariableTarget.User);
+
+            var info = new TripleDESCryptoSecretInfoRepository(config).GetInfo();
 
             Assert.Equal(
-                Environment.GetEnvironmentVariable(TripleDESCryptoKeyEnviromentVariableName, EnvironmentVariableTarget.User),
+                Environment.GetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, EnvironmentVariableTarget.User),
                 info.Key
             );
             Assert.Equal(
-                Environment.GetEnvironmentVariable(TripleDESCryptoIVEnviromentVariableName, EnvironmentVariableTarget.User),
+                Environment.GetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, EnvironmentVariableTarget.User),
                 info.IV
             );
+
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
         }
     }
 }

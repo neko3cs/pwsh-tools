@@ -11,6 +11,8 @@ namespace PwshTools.CryptSecretString
     [Alias("crypt")]
     public class CryptSecretStringCommand : Cmdlet
     {
+        private TripleDESCryptoSecretInfoRepository _tripleDESCryptoSecretInfoRepository;
+
         [Parameter(Position = 0, Mandatory = true, ValueFromPipeline = true)]
         public string Value { get; set; }
         [Parameter(Position = 1)]
@@ -20,12 +22,19 @@ namespace PwshTools.CryptSecretString
         [Parameter(Position = 3)]
         public string IV { get; set; }
 
+        public CryptSecretStringCommand()
+            : this(new TripleDESCryptoSecretInfoRepository(new TripleDESCryptoSecretInfoRepositoryConfig())) { }
+
+        public CryptSecretStringCommand(TripleDESCryptoSecretInfoRepository repository)
+        {
+            _tripleDESCryptoSecretInfoRepository = repository;
+        }
+
         protected override void BeginProcessing()
         {
             if (Key != null && IV != null) return;
 
-            var repository = new TripleDESCryptoSecretInfoRepository();
-            var info = repository.GetInfo();
+            var info = _tripleDESCryptoSecretInfoRepository.GetInfo();
             if (info != null)
             {
                 Key = info.Key;
@@ -33,7 +42,7 @@ namespace PwshTools.CryptSecretString
                 return;
             }
 
-            info = repository.CreateInfo();
+            info = _tripleDESCryptoSecretInfoRepository.CreateInfo();
             Key = info.Key;
             IV = info.IV;
         }

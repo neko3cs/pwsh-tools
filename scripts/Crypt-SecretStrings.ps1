@@ -125,14 +125,14 @@ process {
 
     $Secret = $null
     $SecretFileName = ".\Crypt-SecretStrings.secret"
-    if ([System.IO.File]::Exists($SecretFileName)) {
+    # if ([System.IO.File]::Exists($SecretFileName)) {
         $Secret = Get-Content -Path $SecretFileName | ConvertFrom-Json
-    }
-    else {
-        # HACK: キーを環境変数に持ってモジュール化するか検討
-        $Secret = New-SecretKeyAndIV
-        $Secret | ConvertTo-Json | Out-File -FilePath $SecretFileName
-    }
+    # }
+    # else {
+    #     # HACK: キーを環境変数に持ってモジュール化するか検討
+    #     $Secret = New-SecretKeyAndIV
+    #     $Secret | ConvertTo-Json | Out-File -FilePath $SecretFileName
+    # }
     
     if ($Decrypt) {
         return Get-DecriptString -Value $Value -Secret $Secret
