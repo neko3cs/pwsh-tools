@@ -17,7 +17,7 @@ namespace PwshTools.CryptSecretString.Tests
             cmdlet.Value = "hogehoge";
             cmdlet.Decrypt = new SwitchParameter(isPresent: false);
             cmdlet.Key = UnitTestSecretKey;
-            cmdlet.IV = UnitTestSecretIV;
+            cmdlet.InitializationVector = UnitTestSecretIV;
 
             var result = cmdlet
                 .Invoke<string>()
@@ -33,7 +33,7 @@ namespace PwshTools.CryptSecretString.Tests
             cmdlet.Value = "6GQG8+pOFu7Fz1Qn0LPphw==";
             cmdlet.Decrypt = new SwitchParameter(isPresent: true);
             cmdlet.Key = UnitTestSecretKey;
-            cmdlet.IV = UnitTestSecretIV;
+            cmdlet.InitializationVector = UnitTestSecretIV;
 
             var result = cmdlet
                 .Invoke<string>()

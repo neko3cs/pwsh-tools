@@ -20,7 +20,7 @@ namespace PwshTools.CryptSecretString
         [Parameter(Position = 2)]
         public string Key { get; set; }
         [Parameter(Position = 3)]
-        public string IV { get; set; }
+        public string InitializationVector { get; set; }
 
         public CryptSecretStringCommand()
             : this(new TripleDESCryptoSecretInfoRepository(new TripleDESCryptoSecretInfoRepositoryConfig())) { }
@@ -32,19 +32,19 @@ namespace PwshTools.CryptSecretString
 
         protected override void BeginProcessing()
         {
-            if (Key != null && IV != null) return;
+            if (Key != null && InitializationVector != null) return;
 
             var info = _tripleDESCryptoSecretInfoRepository.GetInfo();
             if (info != null)
             {
                 Key = info.Key;
-                IV = info.IV;
+                InitializationVector = info.IV;
                 return;
             }
 
             info = _tripleDESCryptoSecretInfoRepository.CreateInfo();
             Key = info.Key;
-            IV = info.IV;
+            InitializationVector = info.IV;
         }
 
         protected override void ProcessRecord()
@@ -62,7 +62,7 @@ namespace PwshTools.CryptSecretString
         private string EncryptPlainString(string plainString)
         {
             var provider = new TripleDESCryptoServiceProvider();
-            var encryptor = provider.CreateEncryptor(Convert.FromBase64String(Key), Convert.FromBase64String(IV));
+            var encryptor = provider.CreateEncryptor(Convert.FromBase64String(Key), Convert.FromBase64String(InitializationVector));
 
             using (var memoryStream = new MemoryStream())
             using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
@@ -78,7 +78,7 @@ namespace PwshTools.CryptSecretString
         private string DecryptEncryptedString(string encryptedString)
         {
             var provider = new TripleDESCryptoServiceProvider();
-            var decryptor = provider.CreateDecryptor(Convert.FromBase64String(Key), Convert.FromBase64String(IV));
+            var decryptor = provider.CreateDecryptor(Convert.FromBase64String(Key), Convert.FromBase64String(InitializationVector));
 
             var bytes = Convert.FromBase64String(encryptedString);
             using (var memoryStream = new MemoryStream(bytes))
