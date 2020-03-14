@@ -13,11 +13,13 @@ namespace PwshTools.CryptSecretString.Tests
         [Fact]
         public void Invoke_KeyとIVを引数に渡して正常に暗号化されること()
         {
-            var cmdlet = new CryptSecretStringCommand();
-            cmdlet.Value = "hogehoge";
-            cmdlet.Decrypt = new SwitchParameter(isPresent: false);
-            cmdlet.Key = UnitTestSecretKey;
-            cmdlet.InitializationVector = UnitTestSecretIV;
+            var cmdlet = new CryptSecretStringCommand()
+            {
+                Value = "hogehoge",
+                Decrypt = new SwitchParameter(isPresent: false),
+                Key = UnitTestSecretKey,
+                InitializationVector = UnitTestSecretIV
+            };
 
             var result = cmdlet
                 .Invoke<string>()
@@ -29,11 +31,13 @@ namespace PwshTools.CryptSecretString.Tests
         [Fact]
         public void Invoke_KeyとIVを引数に渡して正常に復号化されること()
         {
-            var cmdlet = new CryptSecretStringCommand();
-            cmdlet.Value = "6GQG8+pOFu7Fz1Qn0LPphw==";
-            cmdlet.Decrypt = new SwitchParameter(isPresent: true);
-            cmdlet.Key = UnitTestSecretKey;
-            cmdlet.InitializationVector = UnitTestSecretIV;
+            var cmdlet = new CryptSecretStringCommand()
+            {
+                Value = "6GQG8+pOFu7Fz1Qn0LPphw==",
+                Decrypt = new SwitchParameter(isPresent: true),
+                Key = UnitTestSecretKey,
+                InitializationVector = UnitTestSecretIV
+            };
 
             var result = cmdlet
                 .Invoke<string>()
@@ -54,9 +58,11 @@ namespace PwshTools.CryptSecretString.Tests
 
             var cmdlet = new CryptSecretStringCommand(
                 new TripleDESCryptoSecretInfoRepository(config)
-            );
-            cmdlet.Value = "hogehoge";
-            cmdlet.Decrypt = new SwitchParameter(isPresent: false);
+            )
+            {
+                Value = "hogehoge",
+                Decrypt = new SwitchParameter(isPresent: false)
+            };
 
             var result = cmdlet
                 .Invoke<string>()
@@ -80,9 +86,11 @@ namespace PwshTools.CryptSecretString.Tests
 
             var cmdlet = new CryptSecretStringCommand(
                 new TripleDESCryptoSecretInfoRepository(config)
-            );
-            cmdlet.Value = "6GQG8+pOFu7Fz1Qn0LPphw==";
-            cmdlet.Decrypt = new SwitchParameter(isPresent: true);
+            )
+            {
+                Value = "6GQG8+pOFu7Fz1Qn0LPphw==",
+                Decrypt = new SwitchParameter(isPresent: true)
+            };
 
             var result = cmdlet
                 .Invoke<string>()
@@ -108,9 +116,11 @@ namespace PwshTools.CryptSecretString.Tests
 
             var cmdlet = new CryptSecretStringCommand(
                 new TripleDESCryptoSecretInfoRepository(config)
-            );
-            cmdlet.Value = "hogehoge";
-            cmdlet.Decrypt = new SwitchParameter(isPresent: false);
+            )
+            {
+                Value = "hogehoge",
+                Decrypt = new SwitchParameter(isPresent: false)
+            };
 
             var result = cmdlet
                 .Invoke<string>()
