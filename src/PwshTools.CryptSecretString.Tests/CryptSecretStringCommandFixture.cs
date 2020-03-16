@@ -1,3 +1,4 @@
+using FluentAssertions;
 using System;
 using System.Linq;
 using System.Management.Automation;
@@ -25,7 +26,7 @@ namespace PwshTools.CryptSecretString.Tests
                 .Invoke<string>()
                 .Single();
 
-            Assert.Equal("6GQG8+pOFu7Fz1Qn0LPphw==", result);
+            result.Should().Be("6GQG8+pOFu7Fz1Qn0LPphw==");
         }
 
         [Fact]
@@ -43,7 +44,7 @@ namespace PwshTools.CryptSecretString.Tests
                 .Invoke<string>()
                 .Single();
 
-            Assert.Equal("hogehoge", result);
+            result.Should().Be("hogehoge");
         }
 
         [Fact]
@@ -68,7 +69,7 @@ namespace PwshTools.CryptSecretString.Tests
                 .Invoke<string>()
                 .Single();
 
-            Assert.Equal("6GQG8+pOFu7Fz1Qn0LPphw==", result);
+            result.Should().Be("6GQG8+pOFu7Fz1Qn0LPphw==");
 
             Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
             Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
@@ -96,7 +97,7 @@ namespace PwshTools.CryptSecretString.Tests
                 .Invoke<string>()
                 .Single();
 
-            Assert.Equal("hogehoge", result);
+            result.Should().Be("hogehoge");
 
             Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
             Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
@@ -111,8 +112,10 @@ namespace PwshTools.CryptSecretString.Tests
             );
             Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
             Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
-            Assert.Null(Environment.GetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, EnvironmentVariableTarget.User));
-            Assert.Null(Environment.GetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, EnvironmentVariableTarget.User));
+            Environment.GetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, EnvironmentVariableTarget.User)
+                .Should().BeNull();
+            Environment.GetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, EnvironmentVariableTarget.User)
+                .Should().BeNull();
 
             var cmdlet = new CryptSecretStringCommand(
                 new TripleDESCryptoSecretInfoRepository(config)
@@ -126,8 +129,11 @@ namespace PwshTools.CryptSecretString.Tests
                 .Invoke<string>()
                 .Single();
 
-            Assert.NotNull(Environment.GetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, EnvironmentVariableTarget.User));
-            Assert.NotNull(Environment.GetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, EnvironmentVariableTarget.User));
+            Environment.GetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, EnvironmentVariableTarget.User)
+                .Should().NotBeNullOrEmpty();
+            Environment.GetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, EnvironmentVariableTarget.User)
+                .Should().NotBeNullOrEmpty();
+
             Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
             Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
         }
