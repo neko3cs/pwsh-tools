@@ -47,17 +47,15 @@ namespace PwshTools.CryptSecretString.Tests
 
             Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
             Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
-            Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, "TestKey", EnvironmentVariableTarget.User);
-            Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, "TestIV", EnvironmentVariableTarget.User);
+            var testKey = "TestKey";
+            var testIV = "TestIV";
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, testKey, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, testIV, EnvironmentVariableTarget.User);
 
             var info = new TripleDESCryptoSecretInfoRepository(config).GetInfo();
 
-            info.Key.Should().Be(
-                Environment.GetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, EnvironmentVariableTarget.User)
-            );
-            info.IV.Should().Be(
-                Environment.GetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, EnvironmentVariableTarget.User)
-            );
+            info.Key.Should().Be(testKey);
+            info.IV.Should().Be(testIV);
 
             Environment.SetEnvironmentVariable(config.TripleDESCryptoKeyEnviromentVariableName, null, EnvironmentVariableTarget.User);
             Environment.SetEnvironmentVariable(config.TripleDESCryptoIVEnviromentVariableName, null, EnvironmentVariableTarget.User);
