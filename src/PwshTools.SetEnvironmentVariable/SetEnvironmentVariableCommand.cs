@@ -1,12 +1,25 @@
 ﻿using System;
+using System.Management.Automation;
 
 namespace PwshTools.SetEnvironmentVariable
 {
-    public class SetEnvironmentVariableCommand
+    [Cmdlet(VerbsCommon.Set, "EnvironmentVariable")]
+    [OutputType(typeof(void))]
+    [Alias("export")]
+    public class SetEnvironmentVariableCommand : Cmdlet
     {
-        static void Main(string[] args)
+        [Parameter(Position = 0, Mandatory = true, ValueFromPipeline = true)]
+        public string Variable { get; set; }
+        [Parameter(Position = 1, Mandatory = true, ValueFromPipeline = true)]
+        public string Value { get; set; }
+        [Parameter(Position = 2)]
+        public EnvironmentVariableTarget EnvironmentVariableTarget { get; set; }
+
+        protected override void ProcessRecord()
         {
-            Console.WriteLine("Hello World!");
+            if (string.IsNullOrEmpty(Value) || string.IsNullOrWhiteSpace(Value)) return;
+
+            Environment.SetEnvironmentVariable(Variable, Value, EnvironmentVariableTarget);
         }
     }
 }
