@@ -9,17 +9,17 @@ namespace PwshTools.SetEnvironmentVariable
     public class SetEnvironmentVariableCommand : Cmdlet
     {
         [Parameter(Position = 0, Mandatory = true, ValueFromPipeline = true)]
-        public string Variable { get; set; }
+        public string Key { get; set; }
         [Parameter(Position = 1, Mandatory = true, ValueFromPipeline = true)]
         public string Value { get; set; }
         [Parameter(Position = 2)]
-        public EnvironmentVariableTarget EnvironmentVariableTarget { get; set; }
+        public EnvironmentVariableTarget EnvironmentVariableTarget { get; set; } = EnvironmentVariableTarget.User;
 
         protected override void ProcessRecord()
         {
             if (string.IsNullOrEmpty(Value) || string.IsNullOrWhiteSpace(Value)) return;
 
-            Environment.SetEnvironmentVariable(Variable, Value, EnvironmentVariableTarget);
+            Environment.SetEnvironmentVariable(Key, Value, EnvironmentVariableTarget);
         }
     }
 }
