@@ -27,7 +27,8 @@ namespace PwshTools.CompressArchive
 
         protected override void BeginProcessing()
         {
-            if (!Directory.Exists(Path.GetDirectoryName(DestinationPath)))
+            WriteObject(new FileInfo(DestinationPath).Directory.FullName);
+            if (!Directory.Exists(new FileInfo(DestinationPath).Directory.FullName))
             {
                 WriteObject("ERROR: DestinationPath's parent directory is not found.");
                 StopProcessing();
