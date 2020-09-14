@@ -31,9 +31,10 @@ $TargetDatabase = ""
 $TargetTables = @(
     # LogicalName: Excel SheetName
     # PhysicalName: Database Table Name
-    @{ LogicalName = ""; PhysicalName = ""; },
-    @{ LogicalName = ""; PhysicalName = ""; },
-    @{ LogicalName = ""; PhysicalName = ""; }
+    # IdentityInsert: If table has identity column, set this option $true.
+    @{ LogicalName = ""; PhysicalName = ""; IdentityInsert = $false; },
+    @{ LogicalName = ""; PhysicalName = ""; IdentityInsert = $true; },
+    @{ LogicalName = ""; PhysicalName = ""; IdentityInsert = $false; }
 )
 $StartRow = 1
 $StartColumn = 1
@@ -60,6 +61,14 @@ foreach ($TargetTable in $TargetTables) {
         -Append `
         -Encoding utf8
 
+    if ($TargetTable.IdentityInsert) {
+        "set identity_insert [$($TargetTable.PhysicalName)] on;" |
+        Out-File `
+            -FilePath $OutputSqlFilePath `
+            -Append `
+            -Encoding utf8
+    }
+
     $Props = $Table |
     Get-Member `
         -MemberType Properties |
@@ -81,6 +90,14 @@ foreach ($TargetTable in $TargetTables) {
             -Separator ", "
         
         "insert into $($TargetTable.PhysicalName) ($ColumnClause) values ($ValuesClause);" |
+        Out-File `
+            -FilePath $OutputSqlFilePath `
+            -Append `
+            -Encoding utf8
+    }
+    
+    if ($TargetTable.IdentityInsert) {
+        "set identity_insert [$($TargetTable.PhysicalName)] off;" |
         Out-File `
             -FilePath $OutputSqlFilePath `
             -Append `
