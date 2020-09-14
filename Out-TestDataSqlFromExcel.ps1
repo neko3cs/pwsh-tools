@@ -33,8 +33,8 @@ $TargetTables = @(
     @{ LogicalName = ""; PhysicalName = ""; },
     @{ LogicalName = ""; PhysicalName = ""; }
 )
-$StartRow = 5
-$StartColumn = 2
+$StartRow = 1
+$StartColumn = 1
 
 if (Test-Path $OutputSqlFilePath) {
     Remove-Item -Force $OutputSqlFilePath
@@ -65,26 +65,27 @@ foreach ($TargetTable in $TargetTables) {
         -ExpandProperty Name
 
     foreach ($Record in $Table) {
-        $Sql = "insert into $($TargetTable.PhysicalName) values ("
-        
-        # FIXME: 正しい順番で並ばないので直す
+        # Columns
+        $ColumnClause = $Props |
+        ForEach-Object { "[$_]" } |
+        Join-String `
+            -Separator ", "
+        # Values
         $ValuesClause = $Props |
         ForEach-Object {
-            return Set-SingleQuate `
+            Set-SingleQuate `
                 -Value $Record.$_
         } |
         Join-String `
             -Separator ", "
-
-        $Sql += "$ValuesClause);"
+        # Build sql string
+        $Sql = "insert into $($TargetTable.PhysicalName) ($ColumnClause) values ($ValuesClause);"
 
         $Sql |
         Out-File `
             -FilePath $OutputSqlFilePath `
             -Append `
             -Encoding utf8
-
-        exit
     }
 
     Out-File `
