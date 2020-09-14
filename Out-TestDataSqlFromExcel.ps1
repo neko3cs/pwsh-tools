@@ -29,6 +29,8 @@ function Set-SingleQuate {
 
 $TargetDatabase = ""
 $TargetTables = @(
+    # LogicalName: Excel SheetName
+    # PhysicalName: Database Table Name
     @{ LogicalName = ""; PhysicalName = ""; },
     @{ LogicalName = ""; PhysicalName = ""; },
     @{ LogicalName = ""; PhysicalName = ""; }
@@ -65,12 +67,11 @@ foreach ($TargetTable in $TargetTables) {
         -ExpandProperty Name
 
     foreach ($Record in $Table) {
-        # Columns
         $ColumnClause = $Props |
         ForEach-Object { "[$_]" } |
         Join-String `
             -Separator ", "
-        # Values
+        
         $ValuesClause = $Props |
         ForEach-Object {
             Set-SingleQuate `
@@ -78,10 +79,8 @@ foreach ($TargetTable in $TargetTables) {
         } |
         Join-String `
             -Separator ", "
-        # Build sql string
-        $Sql = "insert into $($TargetTable.PhysicalName) ($ColumnClause) values ($ValuesClause);"
-
-        $Sql |
+        
+        "insert into $($TargetTable.PhysicalName) ($ColumnClause) values ($ValuesClause);" |
         Out-File `
             -FilePath $OutputSqlFilePath `
             -Append `
