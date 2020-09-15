@@ -17,6 +17,10 @@ param(
     [string]$OutputSqlFilePath = ".\TestData.sql"
 )
 
+if ([string]::IsNullOrEmpty($Path)) {
+    help $MyInvocation.MyCommand.Path
+}
+
 function Set-SingleQuate {
     param (
         [string]$Value
@@ -29,9 +33,6 @@ function Set-SingleQuate {
 
 $TargetDatabase = ""
 $TargetTables = @(
-    # LogicalName: Excel SheetName
-    # PhysicalName: Database Table Name
-    # IdentityInsert: If table has identity column, set this option $true.
     @{ LogicalName = ""; PhysicalName = ""; IdentityInsert = $false; },
     @{ LogicalName = ""; PhysicalName = ""; IdentityInsert = $true; },
     @{ LogicalName = ""; PhysicalName = ""; IdentityInsert = $false; }
@@ -55,7 +56,7 @@ foreach ($TargetTable in $TargetTables) {
         -StartRow $StartRow `
         -StartColumn $StartColumn
 
-    "-- $($TargetTable.PhysicalName)" |
+    "/* `n`t$($TargetTable.PhysicalName)`n*/" |
     Out-File `
         -FilePath $OutputSqlFilePath `
         -Append `
@@ -80,7 +81,7 @@ foreach ($TargetTable in $TargetTables) {
         ForEach-Object { "[$_]" } |
         Join-String `
             -Separator ", "
-        
+
         $ValuesClause = $Props |
         ForEach-Object {
             Set-SingleQuate `
@@ -88,14 +89,14 @@ foreach ($TargetTable in $TargetTables) {
         } |
         Join-String `
             -Separator ", "
-        
+
         "insert into $($TargetTable.PhysicalName) ($ColumnClause) values ($ValuesClause);" |
         Out-File `
             -FilePath $OutputSqlFilePath `
             -Append `
             -Encoding utf8
     }
-    
+
     if ($TargetTable.IdentityInsert) {
         "set identity_insert [$($TargetTable.PhysicalName)] off;" |
         Out-File `
@@ -104,6 +105,7 @@ foreach ($TargetTable in $TargetTables) {
             -Encoding utf8
     }
 
+    "`n`n" |
     Out-File `
         -FilePath $OutputSqlFilePath `
         -Append `
