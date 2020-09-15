@@ -19,6 +19,7 @@ param(
 
 if ([string]::IsNullOrEmpty($Path)) {
     help $MyInvocation.MyCommand.Path
+    exit
 }
 
 function Set-SingleQuate {
@@ -63,7 +64,7 @@ foreach ($TargetTable in $TargetTables) {
         -Encoding utf8
 
     if ($TargetTable.IdentityInsert) {
-        "set identity_insert [$($TargetTable.PhysicalName)] on;" |
+        "set identity_insert $($TargetTable.PhysicalName) on;" |
         Out-File `
             -FilePath $OutputSqlFilePath `
             -Append `
@@ -98,7 +99,7 @@ foreach ($TargetTable in $TargetTables) {
     }
 
     if ($TargetTable.IdentityInsert) {
-        "set identity_insert [$($TargetTable.PhysicalName)] off;" |
+        "set identity_insert $($TargetTable.PhysicalName) off;" |
         Out-File `
             -FilePath $OutputSqlFilePath `
             -Append `
