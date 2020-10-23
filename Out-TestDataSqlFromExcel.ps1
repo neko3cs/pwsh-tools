@@ -22,12 +22,24 @@ if ([string]::IsNullOrEmpty($Path)) {
     exit
 }
 
+function Get-DeleteStatement {
+    param (
+        $TargetTable
+    )
+    return [string]::Join("`n",
+        @(
+            "-- $($TargetTable.LogicalName)" 
+            "delete from $($TargetTable.PhysicalName)"
+            ""
+        ))
+}
+
 function Set-SingleQuate {
     param (
         [string]$Value
     )
-    if ($Value -eq "NULL") {
-        return $Value
+    if ($Value.Trim() -eq "NULL") {
+        return $Value.Trim()
     }
     return "'$Value'"
 }
@@ -40,6 +52,22 @@ $TargetTables = @(
 )
 $StartRow = 1
 $StartColumn = 1
+
+$DeleteSqlFilePath = ".\DeleteTestData.sql"
+if (Test-Path $DeleteSqlFilePath) {
+    Remove-Item -Force $DeleteSqlFilePath
+}
+"use $TargetDatabase`n" |
+Out-File `
+    -FilePath $DeleteSqlFilePath `
+    -Encoding utf8
+foreach ($TargetTable in $TargetTables) {
+    Get-DeleteStatement $TargetTable |
+    Out-File `
+        -FilePath $DeleteSqlFilePath `
+        -Append `
+        -Encoding utf8
+}
 
 if (Test-Path $OutputSqlFilePath) {
     Remove-Item -Force $OutputSqlFilePath
@@ -57,7 +85,7 @@ foreach ($TargetTable in $TargetTables) {
         -StartRow $StartRow `
         -StartColumn $StartColumn
 
-    "/* `n`t$($TargetTable.PhysicalName)`n*/" |
+    "/* `n`t$($TargetTable.LogicalName)`n*/" |
     Out-File `
         -FilePath $OutputSqlFilePath `
         -Append `
@@ -90,7 +118,7 @@ foreach ($TargetTable in $TargetTables) {
         } |
         Join-String `
             -Separator ", "
-
+            
         "insert into $($TargetTable.PhysicalName) ($ColumnClause) values ($ValuesClause);" |
         Out-File `
             -FilePath $OutputSqlFilePath `
