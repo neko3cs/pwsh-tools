@@ -13,19 +13,30 @@
     Toast message.
 #>
 
-PARAM (
+[CmdletBinding()]
+param (
     [Parameter(Mandatory)]
     [String] $Title,
     [Parameter(Mandatory)]
     [String] $Message
 )
 
+if ($PSEdition -ne "Desktop") {
+    Write-Host "Run only Windows PowerShell." `
+        -ForegroundColor Red
+}
+
 [Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] | Out-Null
 [Windows.UI.Notifications.ToastNotification, Windows.UI.Notifications, ContentType = WindowsRuntime] | Out-Null
 [Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom.XmlDocument, ContentType = WindowsRuntime] | Out-Null
 
-# Create Toast UI Xml
-$content = @"
+function New-ToastUiXml {
+    param (
+        [string] $Title,
+        [string] $Message
+    )
+
+    $content = @"
 <?xml version="1.0" encoding="utf-8"?>
 <toast>
     <visual>
@@ -36,10 +47,25 @@ $content = @"
     </visual>
 </toast>
 "@
-$xml = New-Object Windows.Data.Xml.Dom.XmlDocument
-$xml.LoadXml($content)
 
-# Run Show Toast
-$toast = New-Object Windows.UI.Notifications.ToastNotification $xml
-$app_id = '{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\WindowsPowerShell\v1.0\powershell.exe'
-[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier($app_id).Show($toast)
+    $xml = New-Object Windows.Data.Xml.Dom.XmlDocument
+    $xml.LoadXml($content)
+
+    return $xml
+}
+
+function Show-Toast {
+    param (
+        [Windows.Data.Xml.Dom.XmlDocument] $Xml
+    )
+
+    $toast = New-Object Windows.UI.Notifications.ToastNotification $Xml
+    $app_id = '{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\WindowsPowerShell\v1.0\powershell.exe'
+    [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier($app_id).Show($toast)   
+}
+
+$xml = New-ToastUiXml `
+    -Title $Title `
+    -Message $Message
+
+Show-Toast -Xml $xml
