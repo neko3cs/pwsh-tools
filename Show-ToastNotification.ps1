@@ -6,6 +6,7 @@
 .DESCRIPTION
     Show Windows 10 Toast.
     Toast is simple that consist of title and message.
+    This script can run only Windows Powershell; not PowerShell Core. 
 .PARAMETER Title
     Toast title.
 .PARAMETER Message
