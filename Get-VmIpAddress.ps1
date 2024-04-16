@@ -16,11 +16,18 @@ param(
 )
 
 $IPv4_PATTERN = '\b(?:\d{1,3}\.){3}\d{1,3}\b'
+$isRunning = Get-VM |
+Where-Object Name -eq $VMName |
+Select-Object -First 1 |
+ForEach-Object { $_.State -eq 'Running' }
 
+if (-not $isRunning) {
+  throw "$VMName is not running."
+}
 $IpAddress = Get-VM |
 Where-Object Name -eq $VMName |
-Select-Object -ExpandProperty networkadapters |
-Select-Object -ExpandProperty ipaddresses |
+Select-Object -ExpandProperty NetworkAdapters |
+Select-Object -ExpandProperty IPAddresses |
 Where-Object { $_ -Match $IPv4_PATTERN }
 
 return $IpAddress
