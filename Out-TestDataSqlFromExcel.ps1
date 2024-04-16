@@ -1,16 +1,4 @@
-#!pwsh
-
-<#
-.SYNOPSIS
-    Output SQL File for SQL Server from Excel.
-.DESCRIPTION
-    Output SQL File for SQL Server from Excel.
-    If you need test data of system development, you can create with table at Excel.
-.PARAMETER Path
-    Path of test data Excel.
-.PARAMETER OutputSqlFilePath
-    Path of  test data sql file made with Excel.
-#>
+#Requires -PSEdition Core
 
 param(
     [string]$Path,
@@ -28,7 +16,7 @@ function Get-DeleteStatement {
     )
     return [string]::Join("`n",
         @(
-            "-- $($TargetTable.LogicalName)" 
+            "-- $($TargetTable.LogicalName)"
             "delete from $($TargetTable.PhysicalName)"
             ""
         ))
@@ -118,7 +106,7 @@ foreach ($TargetTable in $TargetTables) {
         } |
         Join-String `
             -Separator ", "
-            
+
         "insert into $($TargetTable.PhysicalName) ($ColumnClause) values ($ValuesClause);" |
         Out-File `
             -FilePath $OutputSqlFilePath `

@@ -1,13 +1,18 @@
-# Windows PowerShell
+#Requires -PSEdition Desktop
 # created by https://qiita.com/asterisk9101/items/f13da78b4cb9ab6d3c4b
 
-ls -r "HKLM:\software\microsoft\net framework setup\ndp" | % {
-    $_.GetValue("Version") | ? { $_ } | % {
-        New-Object PSObject | 
+Get-ChildItem -Recurse "HKLM:\software\microsoft\net framework setup\ndp" |
+ForEach-Object {
+    $_.GetValue("Version") |
+    Where-Object { $_ } |
+    ForEach-Object {
+        New-Object PSObject |
         Add-Member NoteProperty -PassThru -Name "Type" -Value "Version" |
         Add-Member NoteProperty -PassThru -Name "Value" -Value $_
     }
-    $_.GetValue("Release") | ? { $_ } | % {
+    $_.GetValue("Release") |
+    Where-Object { $_ } |
+    ForEach-Object {
         switch ($_) {
             "378389" { $r = "4.5" }
             "378675" { $r = "4.5.1 installed with Windows 8.1 or Windows Server 2012 R2" }
@@ -33,4 +38,5 @@ ls -r "HKLM:\software\microsoft\net framework setup\ndp" | % {
         Add-Member NoteProperty -PassThru -Name "Type" -Value "Release" |
         Add-Member NoteProperty -PassThru -Name "Value" -Value $r
     }
-} | Sort -Unique -Property Value
+} |
+Sort-Object -Unique -Property Value
