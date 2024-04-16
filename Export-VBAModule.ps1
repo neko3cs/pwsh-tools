@@ -1,5 +1,14 @@
 #Requires -PSEdition Core
 
+<#
+.SYNOPSIS
+  Excelファイルに保存されたVBAコードを取得します。
+.DESCRIPTION
+  指定のExcelファイルからVBAコードを取得します。
+  VBAコードはExcelファイルと同様のディレクトリへ保存されます。
+.PARAMETER ExcelPath
+  取得したいVBAコードが含まれるExcelファイルのパスを指定します。
+#>
 param(
   [string]$ExcelPath
 )

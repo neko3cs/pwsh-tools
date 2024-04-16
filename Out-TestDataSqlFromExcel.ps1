@@ -1,14 +1,20 @@
 #Requires -PSEdition Core
 
+<#
+.SYNOPSIS
+    ExcelファイルからSQL Server向けのテストデータ投入用SQLファイルを出力します。
+.DESCRIPTION
+    ExcelファイルからSQL Server向けのテストデータ投入用SQLファイルを出力します。
+.PARAMETER Path
+    Excelファイルのパスを指定します。
+.PARAMETER OutputSqlFilePath
+    SQLファイルの出力先パスを指定します。
+    デフォルトでは '.\TestData.sql' となっています。
+#>
 param(
     [string]$Path,
     [string]$OutputSqlFilePath = ".\TestData.sql"
 )
-
-if ([string]::IsNullOrEmpty($Path)) {
-    help $MyInvocation.MyCommand.Path
-    exit
-}
 
 function Get-DeleteStatement {
     param (
@@ -21,7 +27,6 @@ function Get-DeleteStatement {
             ""
         ))
 }
-
 function Set-SingleQuate {
     param (
         [string]$Value
@@ -30,6 +35,11 @@ function Set-SingleQuate {
         return $Value.Trim()
     }
     return "'$Value'"
+}
+
+if ([string]::IsNullOrEmpty($Path)) {
+    help $MyInvocation.MyCommand.Path
+    exit
 }
 
 $TargetDatabase = ""

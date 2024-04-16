@@ -1,8 +1,5 @@
 #Requires -PSEdition Core
 #Requires -RunAsAdministrator
-# VPN接続時にHyper-V上のサーバーへアクセスできない問題を解消するスクリプト
-#   以下記事参照
-#   ⇒ https://aquasoftware.net/blog/?p=1472
 
 <#
 .SYNOPSIS

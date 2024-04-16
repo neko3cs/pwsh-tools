@@ -1,5 +1,14 @@
 #Requires -PSEdition Desktop
-# created by https://qiita.com/asterisk9101/items/f13da78b4cb9ab6d3c4b
+
+<#
+.SYNOPSIS
+    インストールされている.NET Frameworkのバージョンを表示します。
+.DESCRIPTION
+    インストールされている.NET Frameworkのバージョンを表示します。
+.NOTES
+    以下URL先の記事を参考に作成されています。
+    https://qiita.com/asterisk9101/items/f13da78b4cb9ab6d3c4b
+#>
 
 Get-ChildItem -Recurse "HKLM:\software\microsoft\net framework setup\ndp" |
 ForEach-Object {
